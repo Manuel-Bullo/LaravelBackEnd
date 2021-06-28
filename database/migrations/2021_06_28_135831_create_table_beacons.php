@@ -15,6 +15,11 @@ class CreateTableBeacons extends Migration
     {
         Schema::create('beacons', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->double('lat');
+            $table->double('lng');
+            $table->text('icon')->nullable();
             $table->timestamps();
         });
     }
