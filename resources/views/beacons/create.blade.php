@@ -68,7 +68,7 @@
 
     <body>
         <div id="main">
-            <form id="form" method="POST" action="{{ route("beacons.store") }}">
+            <form enctype="multipart/form-data" id="form" method="POST" action="{{ route("beacons.store") }}">
                 @csrf
 
                 <p class="title"><strong>Beacon</strong></p>
@@ -77,12 +77,20 @@
                     <input type="text" id="name" name="name" required />
                 </div>
                 <div class="input">
+                    <label for="description">Description</label>
+                    <input type="text" id="description" name="description" />
+                </div>
+                <div class="input">
                     <label for="lat">Latitude</label>
                     <input type="number" step="any" id="lat" name="lat" required />
                 </div>
                 <div class="input">
                     <label for="lng">Longitude</label>
                     <input type="number" step="any" id="lng" name="lng" required />
+                </div>
+                <div class="input">
+                    <label for="icon">Icon</label>
+                    <input type="file" id="icon" name="icon" accept="image/*" />
                 </div>
                 <input type="submit" value="Create Beacon" />
             </form>

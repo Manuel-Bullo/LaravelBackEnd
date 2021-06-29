@@ -50,20 +50,26 @@
                 <tr>
                     <th>id</th>
                     <th>name</th>
-                    <th>lat</th>
-                    <th>lng</th>
+                    <th>description</th>
+                    <th>latitude</th>
+                    <th>longitude</th>
+                    <th>icon</th>
                 </tr>
 
-                <?php
-                    foreach ($beacons as $key) {
-                        echo "<tr>";
-                        echo "<td>{$key['id']}</td>";
-                        echo "<td>{$key['name']}</td>";
-                        echo "<td>{$key['lat']}</td>";
-                        echo "<td>{$key['lng']}</td>";
-                        echo "</tr>";
-                    }
-                ?>
+                @foreach ($beacons as $beacon)
+                    <tr>
+                        <td>{{ $beacon->id }}</td>
+                        <td>{{ $beacon->name }}</td>
+                        <td>{{ $beacon->description }}</td>
+                        <td>{{ $beacon->lat }}</td>
+                        <td>{{ $beacon->lng }}</td>
+                        <td>
+                            @isset($beacon->icon)
+                                <img src="{{ asset("storage/$beacon->icon") }}" width=64 height=64 />
+                            @endisset
+                        </td>
+                    </tr>
+                @endforeach
             </table>
         </div>
     </body>

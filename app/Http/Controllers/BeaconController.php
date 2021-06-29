@@ -38,8 +38,10 @@ class BeaconController extends Controller
     {
         Beacon::create([
             'name' => $request->get('name'),
+            'description' => $request->get('description'),
             'lat' => $request->get('lat'),
             'lng' => $request->get('lng'),
+            'icon' => $request->file('icon')->store('icons', 'public'),
         ]);
 
         return redirect("/beacons");

@@ -11,7 +11,9 @@ class Beacon extends Model
 
     protected $fillable = [
         'name',
+        'description',
         'lat',
         'lng',
+        'icon',
     ];
 }
