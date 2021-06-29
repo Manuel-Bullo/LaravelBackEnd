@@ -15,7 +15,7 @@ class BeaconController extends Controller
     public function index()
     {
         $beacons = Beacon::get();
-        return view("ViewBeacons", compact("beacons"));
+        return view("/beacons/index", compact("beacons"));
     }
 
     /**
@@ -25,7 +25,7 @@ class BeaconController extends Controller
      */
     public function create()
     {
-        return view('CreateBeacon');
+        return view('/beacons/create');
     }
 
     /**
