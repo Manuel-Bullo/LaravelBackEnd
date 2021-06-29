@@ -14,7 +14,8 @@ class BeaconController extends Controller
      */
     public function index()
     {
-        //
+        $beacons = Beacon::get();
+        return view("ViewBeacons", compact("beacons"));
     }
 
     /**
@@ -35,11 +36,13 @@ class BeaconController extends Controller
      */
     public function store(Request $request)
     {
-        return Beacon::create([
+        Beacon::create([
             'name' => $request->get('name'),
             'lat' => $request->get('lat'),
             'lng' => $request->get('lng'),
         ]);
+
+        return redirect("/beacons");
     }
 
     /**
