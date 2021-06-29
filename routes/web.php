@@ -15,7 +15,7 @@ use App\Http\Controllers\BeaconController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('beacons.index');
 });
 
 Route::resource('beacons', BeaconController::class);

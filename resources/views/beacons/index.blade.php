@@ -39,6 +39,23 @@
                 background-color: #04AA6D;
                 color: white;
             }
+
+            #navigation-btn, #delete-btn {
+                background-color: #04AA6D;
+                color: white;
+                border: none;
+                cursor: pointer;
+            }
+
+            #delete-btn {
+                background-color: rgb(172, 19, 19);
+            }
+
+            #navigation-btn {
+                width: 100%;
+                height: 40px;
+                font-size: 200%;
+            }
         </style>
 
         <title>Beacons</title>
@@ -53,7 +70,9 @@
                     <th>description</th>
                     <th>latitude</th>
                     <th>longitude</th>
+                    <th>rotation</th>
                     <th>icon</th>
+                    <th>edit</th>
                 </tr>
 
                 @foreach ($beacons as $beacon)
@@ -63,14 +82,23 @@
                         <td>{{ $beacon->description }}</td>
                         <td>{{ $beacon->lat }}</td>
                         <td>{{ $beacon->lng }}</td>
+                        <td>{{ $beacon->rotation }}</td>
                         <td>
                             @isset($beacon->icon)
                                 <img src="{{ asset("storage/$beacon->icon") }}" width=64 height=64 />
                             @endisset
                         </td>
+                        <td>
+                            <form action="{{ route('beacons.destroy', $beacon) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <input type="submit" value="delete" id="delete-btn" />
+                            </form>
+                        </td>
                     </tr>
                 @endforeach
             </table>
+            <a href="{{ route('beacons.create') }}"><button id="navigation-btn">Create Beacon</button></a>
         </div>
     </body>
 </html>

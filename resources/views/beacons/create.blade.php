@@ -61,6 +61,17 @@
             .title {
                 font-weight: 500;
             }
+
+            div#coords {
+                display: flex;
+                flex-direction: row;
+            }
+
+            div#coords div {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
         </style>
 
         <title>Beacon Creator</title>
@@ -89,12 +100,30 @@
                     <input type="number" step="any" id="lng" name="lng" required />
                 </div>
                 <div class="input">
+                    <label>Rotation</label>
+                    <div id="coords">
+                        <div>
+                            <label for="rotationX">X</label>
+                            <input type="number" value=0 min=0 max=360 step="any" id="rotationX" name="rotationX" required />
+                        </div>
+                        <div>
+                            <label for="rotationY">Y</label>
+                            <input type="number" value=0 min=0 max=360 step="any" id="rotationY" name="rotationY" required />
+                        </div>
+                        <div>
+                            <label for="rotationZ">Z</label>
+                            <input type="number" value=0 min=0 max=360 step="any" id="rotationZ" name="rotationZ" required />
+                        </div>
+                    </div>
+                </div>
+                <div class="input">
                     <label for="icon">Icon</label>
                     <input type="file" id="icon" name="icon" accept="image/*" />
                 </div>
                 <input type="submit" value="Create Beacon" />
             </form>
             <div id="inner-circle"></div>
+            <a href="{{ route('beacons.index') }}"><button>View Beacons</button></a>
         </div>
     </body>
 

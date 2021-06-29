@@ -14,6 +14,7 @@ class Beacon extends Model
         'description',
         'lat',
         'lng',
+        'rotation',
         'icon',
     ];
 }

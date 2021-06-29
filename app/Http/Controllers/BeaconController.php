@@ -41,7 +41,12 @@ class BeaconController extends Controller
             'description' => $request->get('description'),
             'lat' => $request->get('lat'),
             'lng' => $request->get('lng'),
-            'icon' => $request->file('icon')->store('icons', 'public'),
+            'rotation' => json_encode([
+                'x' => doubleval($request->get('rotationX')),
+                'y' => doubleval($request->get('rotationY')),
+                'z' => doubleval($request->get('rotationZ')),
+            ]),
+            'icon' => ($request->hasFile('icon') ? $request->file('icon')->store('icons', 'public') : null),
         ]);
 
         return redirect("/beacons");
@@ -89,6 +94,8 @@ class BeaconController extends Controller
      */
     public function destroy(Beacon $beacon)
     {
-        //
+        $beacon->delete();
+
+        return redirect()->route('beacons.index');
     }
 }
