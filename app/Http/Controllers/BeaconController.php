@@ -46,14 +46,8 @@ class BeaconController extends Controller
                 'y' => doubleval($request->get('rotationY')),
                 'z' => doubleval($request->get('rotationZ')),
             ]),
-            'icon' => ($request->hasFile('icon') ? $request->file('icon')->storeAs(
-                'icons',
-                $request->file('icon')->getClientOriginalName(),
-                'public'
-            ) : null),
+            'icon' => ($request->hasFile('icon') ? $request->file('icon')->store('icons', 'public') : null),
         ]);
-
-        #'icon' => ($request->hasFile('icon') ? $request->file('icon')->store('icons', 'public') : null),
 
         return redirect("/beacons");
     }
