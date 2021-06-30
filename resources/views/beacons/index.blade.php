@@ -85,7 +85,7 @@
                         <td>{{ $beacon->rotation }}</td>
                         <td>
                             @isset($beacon->icon)
-                                <img src="{{ asset("storage/$beacon->icon") }}" width=64 height=64 />
+                                {{ basename($beacon->icon) }}
                             @endisset
                         </td>
                         <td>

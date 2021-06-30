@@ -139,7 +139,7 @@
                 </div>
                 <div class="input">
                     <label for="icon">Icon</label>
-                    <input type="file" id="icon" name="icon" accept="image/*" />
+                    <input type="file" id="icon" name="icon" accept=".obj" />
                 </div>
                 <div id="btn-container">
                     <a href="{{ route('beacons.index') }}"><button type="button">View Beacons</button></a>
