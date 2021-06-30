@@ -1,84 +1,85 @@
 <!DOCTYPE html>
 
 <html lang="{{ app()->getLocale() }}">
-
     <head>
         <meta charset="UTF-8">
         <meta name="description" content="Beacon Creator">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
         <style>
-            #main-div {
+            #header {
+                position: fixed;
+                width: 100%;
+                height: 55px;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                color: white;
+                z-index: 1;
+            }
+
+            #header h1 {
+                padding-left: 10px;
+            }
+
+            #header button {
+                height: 100%;
+                border-left: 3px solid #1C1F23;
+            }
+
+            #table-container {
                 position: absolute;
-                top: 50%;
+                width: 75%;
+                height: calc(100vh - 55px);
+                top: 55px;
                 left: 50%;
-                transform: translate(-50%, -50%);
+                transform: translate(-50%, 0);
+                overflow-y: scroll;
+                z-index: 0;
             }
 
-            table {
-                font-family: Arial, Helvetica, sans-serif;
-                border-collapse: collapse;
-                width: 100%;
+            .scrollbar-danger::-webkit-scrollbar-track {
+                -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+                background-color: #2C3034;
+                border-radius: 10px;
             }
 
-            table td, table th {
-                border: 1px solid #ddd;
-                padding: 8px;
-                max-width: 150px;
-                word-wrap: break-word;
+            .scrollbar-danger::-webkit-scrollbar {
+                width: 12px;
+                background-color: #212529;
             }
 
-            table tr:nth-child(even) {
-                background-color: #f2f2f2;
+            .scrollbar-danger::-webkit-scrollbar-thumb {
+                border-radius: 10px;
+                -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+                background-color: #ff3547;
             }
 
-            table tr:hover {
-                background-color: #ddd;
+            .scrollbar-danger {
+                scrollbar-color: #ff3547 #212529;
             }
 
-            table th {
-                text-align: left;
-                background-color: #04AA6D;
-                color: white;
-            }
-
-            #navigation-btn, #delete-btn {
-                color: white;
-                border: none;
-                cursor: pointer;
-            }
-
-            #delete-btn {
-                background-color: rgb(172, 19, 19);
-                font-size: 20px;
-            }
-
-            #delete-btn:hover {
-                background-color: rgb(124, 9, 9);
-            }
-
-            #navigation-btn {
-                background-color: #04AA6D;
-                width: 100%;
-                height: 40px;
-                font-size: 200%;
-            }
-
-            #navigation-btn:hover {
-                background-color: #038a58;
+            ::-webkit-scrollbar-corner {
+                background: #212529;
             }
         </style>
 
         <title>Beacons</title>
     </head>
 
-    <body>
-        <div id="main-div">
-            <table>
+    <body class="bg-dark">
+        <div class="bg-dark" id="header">
+            <h1>Beacons</h1>
+
+            <a href="{{ route('beacons.create') }}"><button type="button" class="btn btn-dark">Create Beacon</button></a>
+        </div>
+
+        <div class="scrollbar-danger" id="table-container">
+            <table class="table table-dark table-striped">
                 <tr>
-                    <th>id</th>
                     <th>name</th>
-                    <th>description</th>
                     <th>latitude</th>
                     <th>longitude</th>
                     <th>rotation</th>
@@ -88,13 +89,11 @@
 
                 @foreach ($beacons as $beacon)
                     <tr>
-                        <td>{{ $beacon->id }}</td>
                         <td>{{ $beacon->name }}</td>
-                        <td>{{ $beacon->description }}</td>
                         <td>{{ $beacon->lat }}</td>
                         <td>{{ $beacon->lng }}</td>
-                        <td>{{ $beacon->rotation }}</td>
-                        <td>
+                        <td>x: {{ json_decode($beacon->rotation)->x }}, y: {{ json_decode($beacon->rotation)->y }}, z: {{ json_decode($beacon->rotation)->z }}</td>
+                        <td style="max-width: 150px; word-wrap: break-word;">
                             @isset($beacon->icon)
                                 {{ basename($beacon->icon) }}
                             @endisset
@@ -103,13 +102,12 @@
                             <form action="{{ route('beacons.destroy', $beacon) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
-                                <input type="submit" value="delete" id="delete-btn" />
+                                <input type="submit" class="btn btn-danger" value="delete" />
                             </form>
                         </td>
                     </tr>
                 @endforeach
             </table>
-            <a href="{{ route('beacons.create') }}"><button id="navigation-btn">Create Beacon</button></a>
         </div>
     </body>
 </html>

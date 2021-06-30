@@ -5,167 +5,101 @@
     <head>
         <meta charset="UTF-8">
         <meta name="description" content="Beacon Creator">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCis0s71mPE0AuOdGdlWcn_Qw5610aWZu0"></script>
 		<script src="https://unpkg.com/location-picker/dist/location-picker.min.js"></script>
 
         <style>
-            body {
-                font-size: 100%;
-                overflow: hidden;
-            }
-
-            div#main-div {
-                background-color: #04AA6D;
-                color: white;
-                width: 300px;
-                height: 320px;
-                position: absolute;
-                top: 100vh;
-                left: 0;
-                transform: translate(7%, -110%);
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                text-align: center;
-            }
-
-            form {
-                width: 100%;
-            }
-
-            .input {
-                width: 100%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .title {
-                font-weight: 500;
-            }
-
-            div#coords {
-                display: flex;
-                flex-direction: row;
-                justify-content: center;
-            }
-
-            div#coords div {
-                width: 20%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-
-            div#coords div div {
-                width: 100%;
-            }
-
-            div#btn-container {
-                display: flex;
-                flex-direction: row;
-            }
-
-            div#btn-container {
-                width: 100%;
-                display: flex;
-            }
-
-            div#btn-container * {
-                flex-grow: 1;
-                background-color: #04AA6D;
-                border: 1px solid #038a58;
-                color: white;
-                cursor: pointer;
-            }
-
-            div#btn-container a {
-                border: none;
-            }
-
-            div#btn-container a button {
-                width: 100%;
-                height: 100%;
-                border: 1px solid #038a58;
-                color: white;
-            }
-
             #map {
-                top: -10px;
-                left: -10px;
-				width:  100%;
+                top: -8px;
+                left: -8px;
+				width: calc(100% + 16px);
 				height: 100vh;
+                z-index: 0;
 			}
 
-            #coords-selector-btn {
-                width: 100%;
-                background-color: #04AA6D;
-                border: 2px solid #038a58;
-                color: white;
-                cursor: pointer;
+            #form-container {
+                position: absolute;
+                width: 350px;
+                top: 100vh;
+                transform: translate(5%, -105%);
+                padding: 10px 10px 0 10px;
+                border-radius: 1%;
+                z-index: 1;
             }
 
-            #coords-selector-btn:hover, div#btn-container input:hover, div#btn-container a button:hover {
-                background-color: #038a58;
+            #title {
+                font-size: 35px;
+            }
+
+            #rotation-label {
+                background-color: #1E2125;
+            }
+
+            #btn-container {
+                transform: translate(0, -15px);
             }
         </style>
 
         <title>Beacon Creator</title>
     </head>
 
-    <body>
+    <body class="overflow-hidden text-white">
         <div id="map"></div>
 
-        <div id="main-div">
-            <button type="button" id="coords-selector-btn" onclick="getMarkerPosition();">Get Marker Position</button>
-
-            <form enctype="multipart/form-data" id="form" method="POST" action="{{ route("beacons.store") }}">
+        <div class="bg-dark" id="form-container">
+            <form class="row g-3" enctype="multipart/form-data" id="form" method="POST" action="{{ route("beacons.store") }}">
                 @csrf
 
-                <p class="title"><strong>Beacon</strong></p>
-                <div class="input">
-                    <label for="name">Name</label>
-                    <input type="text" id="name" name="name" required />
-                </div>
-                <div class="input">
-                    <label for="description">Description</label>
-                    <input type="text" id="description" name="description" />
-                </div>
-                <div class="input">
-                    <label for="lat">Latitude</label>
-                    <input type="number" step="any" id="lat" name="lat" required />
-                </div>
-                <div class="input">
-                    <label for="lng">Longitude</label>
-                    <input type="number" step="any" id="lng" name="lng" required />
-                </div>
                 <div>
-                    <label>Rotation</label>
-                    <div id="coords">
-                        <div>
-                            <label for="rotationX">X</label>
-                            <input type="number" class="input" value=0 min=0 max=360 step="any" id="rotationX" name="rotationX" required />
+                    <label id="title">Beacon</label>
+                </div>
+                <div class="col-md-12">
+                  <label for="name" class="form-label">Name</label>
+                  <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="col-md-12">
+                  <label for="description" class="form-label">Description</label>
+                  <input type="text" class="form-control" id="description" name="description">
+                </div>
+                <div class="col-6">
+                  <label for="lat" class="form-label">Latitude</label>
+                  <input type="number" step="any" class="form-control" id="lat" name="lat" required>
+                </div>
+                <div class="col-6">
+                  <label for="lng" class="form-label">Longitude</label>
+                  <input type="number" step="any" class="form-control" id="lng" name="lng" required>
+                </div>
+                <div class="col-md-12 text-center d-flex flex-column" id="rotation-val-container">
+                    <label id="rotation-label">Rotation</label>
+                    <div class="d-flex justify-content-between" id="rotation-val">
+                        <div class="col-3">
+                            <label for="rotationX" class="form-label">X</label>
+                            <input type="number" step="any" min=0 max=360 value=0 class="form-control" id="rotationX" name="rotationX" required>
                         </div>
-                        <div>
-                            <label for="rotationY">Y</label>
-                            <input type="number" class="input" value=0 min=0 max=360 step="any" id="rotationY" name="rotationY" required />
+                        <div class="col-3">
+                            <label for="rotationY" class="form-label">Y</label>
+                            <input type="number" step="any" min=0 max=360 value=0 class="form-control" id="rotationY" name="rotationY" required>
                         </div>
-                        <div>
-                            <label for="rotationZ">Z</label>
-                            <input type="number" class="input" value=0 min=0 max=360 step="any" id="rotationZ" name="rotationZ" required />
+                        <div class="col-3">
+                            <label for="rotationZ" class="form-label">Z</label>
+                            <input type="number" step="any" min=0 max=360 value=0 class="form-control" id="rotationZ" name="rotationZ" required>
                         </div>
                     </div>
                 </div>
-                <div class="input">
-                    <label for="icon">Icon</label>
-                    <input type="file" id="icon" name="icon" accept=".obj" />
+                <div class="col-12">
+                    <label for="file" class="form-label">3D Model (OBJ)</label>
+                    <input type="file" accept=".obj" class="form-control" id="file" name="icon">
+                  </div>
+                <div class="col-12">
+                    <button type="button" class="btn btn-dark w-100" onclick="getMarkerPosition();">Get Marker Position</button>
                 </div>
-                <div id="btn-container">
-                    <a href="{{ route('beacons.index') }}"><button type="button">View Beacons</button></a>
-                    <input type="submit" value="Create Beacon" />
+                <div class="col-12 d-flex" id="btn-container">
+                  <a href="{{ route('beacons.index') }}" class="flex-grow-1"><button type="button" class="btn btn-dark w-100">View Beacons</button></a>
+                  <button type="submit" class="btn btn-dark flex-grow-1">Create Beacon</button>
                 </div>
             </form>
         </div>
