@@ -13,16 +13,18 @@
         <style>
             body {
                 font-size: 100%;
+                overflow: hidden;
             }
 
             div#main-div {
-                background-color: #5f9ea0;
+                background-color: #04AA6D;
+                color: white;
                 width: 300px;
-                height: 300px;
+                height: 320px;
                 position: absolute;
                 top: 100vh;
                 left: 0;
-                transform: translate(2%, -110%);
+                transform: translate(7%, -110%);
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
@@ -74,20 +76,40 @@
 
             div#btn-container * {
                 flex-grow: 1;
+                background-color: #04AA6D;
+                border: 1px solid #038a58;
+                color: white;
+                cursor: pointer;
+            }
+
+            div#btn-container a {
+                border: none;
             }
 
             div#btn-container a button {
                 width: 100%;
                 height: 100%;
+                border: 1px solid #038a58;
+                color: white;
             }
 
             #map {
+                top: -10px;
+                left: -10px;
 				width:  100%;
 				height: 100vh;
 			}
 
             #coords-selector-btn {
                 width: 100%;
+                background-color: #04AA6D;
+                border: 2px solid #038a58;
+                color: white;
+                cursor: pointer;
+            }
+
+            #coords-selector-btn:hover, div#btn-container input:hover, div#btn-container a button:hover {
+                background-color: #038a58;
             }
         </style>
 

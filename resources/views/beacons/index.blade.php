@@ -24,6 +24,8 @@
             table td, table th {
                 border: 1px solid #ddd;
                 padding: 8px;
+                max-width: 150px;
+                word-wrap: break-word;
             }
 
             table tr:nth-child(even) {
@@ -41,7 +43,6 @@
             }
 
             #navigation-btn, #delete-btn {
-                background-color: #04AA6D;
                 color: white;
                 border: none;
                 cursor: pointer;
@@ -49,12 +50,22 @@
 
             #delete-btn {
                 background-color: rgb(172, 19, 19);
+                font-size: 20px;
+            }
+
+            #delete-btn:hover {
+                background-color: rgb(124, 9, 9);
             }
 
             #navigation-btn {
+                background-color: #04AA6D;
                 width: 100%;
                 height: 40px;
                 font-size: 200%;
+            }
+
+            #navigation-btn:hover {
+                background-color: #038a58;
             }
         </style>
 
