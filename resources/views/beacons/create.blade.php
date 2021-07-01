@@ -4,12 +4,13 @@
 
     <head>
         <meta charset="UTF-8">
-        <meta name="description" content="Beacon Creator">
+        <meta name="description" content="Create Beacon">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCis0s71mPE0AuOdGdlWcn_Qw5610aWZu0"></script>
+        <!-- https://cyphercodes.github.io/location-picker/docs/ -->
 		<script src="https://unpkg.com/location-picker/dist/location-picker.min.js"></script>
 
         <style>
