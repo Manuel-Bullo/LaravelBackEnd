@@ -89,12 +89,13 @@
                         <td style="max-width: 150px; word-wrap: break-word;">
                             <a href="{{ route('beacons.show', $beacon) }}"><button type="button" class="btn btn-secondary">view</button></a>
                         </td>
-                        <td>
+                        <td class="d-flex flex-row">
                             <form action="{{ route('beacons.destroy', $beacon) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
                                 <input type="submit" class="btn btn-danger" value="delete" />
                             </form>
+                            <a href="{{ route('beacons.edit', $beacon) }}"><button type="button" class="btn btn-primary">edit</button></a>
                         </td>
                     </tr>
                 @endforeach

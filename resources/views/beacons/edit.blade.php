@@ -44,7 +44,7 @@
             #beacon-div {
                 height: 63%;
                 padding: 40px;
-                font-size: 20px;
+                font-size: 15px;
             }
 
             .field {
@@ -129,16 +129,33 @@
                                 </div>
                             </div>
                             <div class="d-flex flex-column">
-                                <div class="d-flex flex-row justify-content-between">
-                                    <label for="input-model" class="field">Model: {{ $beacon->icon ? substr($beacon->icon, strpos($beacon->icon, '-') + 1) : 'none' }}</label>
-                                    <div class="d-flex flex-row">
-                                        @isset($beacon->icon)
-                                            <label for="remove-model" style="padding-right: 10px;">Delete Model</label>
-                                            <input type="checkbox" class="h-100" id="remove-model" name="removeModel">
-                                        @endisset
+                                <label class="field">Model</label>
+                                <div class="d-flex flex-column justify-content-around text-center w-100">
+                                    <div class="d-flex flex-column">
+                                        <div class="d-flex flex-row justify-content-between">
+                                            <label for="input-model" class="value"><span class="field">OBJ</span>: {{ $beacon->icon ? substr($beacon->icon, strpos($beacon->icon, '-') + 1) : 'none' }}</label>
+                                            <div class="d-flex flex-row">
+                                                @isset($beacon->icon)
+                                                    <label for="remove-model" style="padding-right: 10px;">Delete</label>
+                                                    <input type="checkbox" class="h-100" id="remove-model" name="removeModel">
+                                                @endisset
+                                            </div>
+                                        </div>
+                                        <input type="file" accept=".obj" class="value" id="input-model" name="icon">
+                                    </div>
+                                    <div class="d-flex flex-column">
+                                        <div class="d-flex flex-row justify-content-between">
+                                            <label for="input-mtl" class="value"><span class="field">MTL</span>: {{ $beacon->mtl ? substr($beacon->mtl, strpos($beacon->mtl, '-') + 1) : 'none' }}</label>
+                                            <div class="d-flex flex-row">
+                                                @isset($beacon->mtl)
+                                                    <label for="remove-mtl" style="padding-right: 10px;">Delete</label>
+                                                    <input type="checkbox" class="h-100" id="remove-mtl" name="removeMTL">
+                                                @endisset
+                                            </div>
+                                        </div>
+                                        <input type="file" accept=".mtl" class="value" id="input-mtl" name="mtl">
                                     </div>
                                 </div>
-                                <input type="file" accept=".obj" class="value" id="input-model" name="icon">
                             </div>
                             <div class="d-flex flex-row">
                                 <button type="button" class="btn btn-dark flex-grow-1" onClick="getMarkerPosition();">Get Marker Position</button>

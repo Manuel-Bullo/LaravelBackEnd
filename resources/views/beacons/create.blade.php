@@ -92,9 +92,13 @@
                     </div>
                 </div>
                 <div class="col-12">
-                    <label for="file" class="form-label">3D Model (OBJ)</label>
-                    <input type="file" accept=".obj" class="form-control" id="file" name="icon">
-                  </div>
+                    <label for="file-obj" class="form-label">3D Model (OBJ)</label>
+                    <input type="file" accept=".obj" class="form-control" id="file-obj" name="icon">
+                </div>
+                <div class="col-12">
+                    <label for="file-mtl" class="form-label">3D Model (MTL)</label>
+                    <input type="file" accept=".mtl" class="form-control" id="file-mtl" name="mtl">
+                </div>
                 <div class="col-12">
                     <button type="button" class="btn btn-dark w-100" onclick="getMarkerPosition();">Get Marker Position</button>
                 </div>

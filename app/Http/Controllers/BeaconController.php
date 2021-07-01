@@ -48,6 +48,7 @@ class BeaconController extends Controller
                 'z' => doubleval($request->get('rotationZ')),
             ]),
             'icon' => ($request->hasFile('icon') ? $request->file('icon')->storeAs('icons', time() . '-' . $request->file('icon')->getClientOriginalName(), 'public') : null),
+            'mtl' => ($request->hasFile('mtl') ? $request->file('mtl')->storeAs('mtl', time() . '-' . $request->file('mtl')->getClientOriginalName(), 'public') : null),
         ]);
 
         return redirect("/beacons");
@@ -98,6 +99,11 @@ class BeaconController extends Controller
         if (isset($request->removeModel) || $request->hasFile('icon')) {
             Storage::disk('public')->delete($beacon->icon);
             $beacon->icon = ($request->hasFile('icon') ? $request->file('icon')->storeAs('icons', time() . '-' . $request->file('icon')->getClientOriginalName(), 'public') : null);
+        }
+
+        if (isset($request->removeMTL) || $request->hasFile('mtl')) {
+            Storage::disk('public')->delete($beacon->mtl);
+            $beacon->mtl = ($request->hasFile('mtl') ? $request->file('mtl')->storeAs('mtl', time() . '-' . $request->file('mtl')->getClientOriginalName(), 'public') : null);
         }
 
         $beacon->save();

@@ -17,6 +17,7 @@ class Beacon extends Model
         'lng',
         'rotation',
         'icon',
+        'mtl',
     ];
 
     protected static function boot()
@@ -24,6 +25,7 @@ class Beacon extends Model
         parent::boot();
         static::deleting(function (Beacon $beacon) {
             Storage::disk('public')->delete($beacon->icon);
+            Storage::disk('public')->delete($beacon->mtl);
         });
     }
 }

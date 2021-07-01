@@ -124,7 +124,16 @@
                         </div>
                         <div class="d-flex flex-column">
                             <label class="field">Model</label>
-                            <label class="value">{{ $beacon->icon ? substr($beacon->icon, strpos($beacon->icon, '-') + 1) : 'none' }}</label>
+                            <div class="d-flex flex-row justify-content-around text-center w-100">
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <label class="subfield">OBJ</label>
+                                    <label class="value">{{ $beacon->icon ? substr($beacon->icon, strpos($beacon->icon, '-') + 1) : 'none' }}</label>
+                                </div>
+                                <div class="d-flex flex-column flex-grow-1">
+                                    <label class="subfield">MTL</label>
+                                    <label class="value">{{ $beacon->mtl ? substr($beacon->mtl, strpos($beacon->mtl, '-') + 1) : 'none' }}</label>
+                                </div>
+                            </div>
                         </div>
                         <button type="button" class="btn btn-dark w-100" id="reset-camera-btn">Reset Camera</button>
                     </div>
