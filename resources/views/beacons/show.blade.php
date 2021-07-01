@@ -24,6 +24,7 @@
             }
 
             #header button {
+                width: 190px;
                 height: 100%;
                 border-left: 3px solid #1C1F23;
             }
@@ -42,14 +43,6 @@
                 height: 60%;
                 padding: 40px;
                 font-size: 20px;
-            }
-
-            #position-values-container {
-                width: 300px;
-            }
-
-            #rotation-values-container {
-                width: 300px;
             }
 
             #map {
@@ -83,6 +76,7 @@
             <div class="bg-dark w-100 d-flex flex-row justify-content-between text-white" id="header">
                 <h1>Beacon</h1>
                 <div>
+                    <a href="{{ route('beacons.edit', $beacon) }}"><button type="button" class="btn btn-dark">Edit Beacon</button></a>
                     <a href="{{ route('beacons.index') }}"><button type="button" class="btn btn-dark">View Beacons</button></a>
                     <a href="{{ route('beacons.create') }}"><button type="button" class="btn btn-dark">Create Beacon</button></a>
                 </div>
@@ -100,7 +94,7 @@
                         </div>
                         <div class="d-flex flex-column w-100" id="coords-div">
                             <label class="field">Position</label>
-                            <div class="d-flex flex-row justify-content-around text-center" id="position-values-container">
+                            <div class="d-flex flex-row justify-content-around text-center w-100">
                                 <div class="d-flex flex-column flex-grow-1">
                                     <label>Latitude</label>
                                     <label class="value">{{ $beacon->lat }}</label>
@@ -113,7 +107,7 @@
                         </div>
                         <div class="d-flex flex-column">
                             <label class="field">Rotation</label>
-                            <div class="d-flex flex-row justify-content-around text-center" id="rotation-values-container">
+                            <div class="d-flex flex-row justify-content-around text-center w-100">
                                 <div class="d-flex flex-column flex-grow-1">
                                     <label class="subfield">X</label>
                                     <label class="value">{{ json_decode($beacon->rotation)->x }}</label>

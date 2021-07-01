@@ -20,6 +20,7 @@
             }
 
             #header button {
+                width: 190px;
                 height: 100%;
                 border-left: 3px solid #1C1F23;
             }

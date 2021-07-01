@@ -68,11 +68,11 @@
                 </div>
                 <div class="col-6">
                   <label for="lat" class="form-label">Latitude</label>
-                  <input type="number" step="any" class="form-control" id="lat" name="lat" required>
+                  <input type="number" step="any" oninput="updatePosition();" class="form-control" id="lat" name="lat" required>
                 </div>
                 <div class="col-6">
                   <label for="lng" class="form-label">Longitude</label>
-                  <input type="number" step="any" class="form-control" id="lng" name="lng" required>
+                  <input type="number" step="any" oninput="updatePosition();" class="form-control" id="lng" name="lng" required>
                 </div>
                 <div class="col-md-12 text-center d-flex flex-column" id="rotation-val-container">
                     <label id="rotation-label">Rotation</label>
@@ -119,6 +119,13 @@
 
                 latInput.value = responseCoords.lat;
                 lngInput.value = responseCoords.lng;
+            }
+
+            function updatePosition() {
+                let lat = parseFloat(document.getElementById('lat').value);
+                let lng = parseFloat(document.getElementById('lng').value);
+
+                locationPicker.map.setCenter({lat: lat, lng: lng});
             }
 		</script>
     </body>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Beacon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class BeaconController extends Controller
 {
@@ -71,7 +72,7 @@ class BeaconController extends Controller
      */
     public function edit(Beacon $beacon)
     {
-        //
+        return view('/beacons/edit', compact('beacon'));
     }
 
     /**
@@ -83,7 +84,24 @@ class BeaconController extends Controller
      */
     public function update(Request $request, Beacon $beacon)
     {
-        //
+        $beacon->name = $request->name;
+        $beacon->description = $request->description;
+        $beacon->lat = $request->lat;
+        $beacon->lng = $request->lng;
+        $beacon->rotation = json_encode([
+            'x' => doubleval($request->get('rotationX')),
+            'y' => doubleval($request->get('rotationY')),
+            'z' => doubleval($request->get('rotationZ')),
+        ]);
+
+        if (isset($request->removeModel) || $request->hasFile('icon')) {
+            Storage::disk('public')->delete($beacon->icon);
+            $beacon->icon = ($request->hasFile('icon') ? $request->file('icon')->storeAs('icons', time() . '-' . $request->file('icon')->getClientOriginalName(), 'public') : null);
+        }
+
+        $beacon->save();
+
+        return redirect()->route('beacons.show', compact('beacon'));
     }
 
     /**
