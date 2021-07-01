@@ -62,6 +62,7 @@ class BeaconController extends Controller
     public function show(Beacon $beacon)
     {
         return view('/beacons/show', compact('beacon'));
+        //return view('/beacons/show3DViewTest', compact('beacon'));
     }
 
     /**

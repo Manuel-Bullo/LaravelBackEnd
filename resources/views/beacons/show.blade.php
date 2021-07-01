@@ -36,22 +36,22 @@
             }
 
             #div-container {
-                width: 50%;
+                width: 67%;
             }
 
             #beacon-div {
-                height: 60%;
+                height: 63%;
                 padding: 40px;
                 font-size: 20px;
             }
 
             #map {
-                height: 40%;
+                height: 37%;
             }
 
-            #model-div {
-                width: 50%;
-                background-color: green;
+            #scene-div {
+                width: 100%;
+                height: 100%;
             }
 
             .field {
@@ -110,15 +110,15 @@
                             <div class="d-flex flex-row justify-content-around text-center w-100">
                                 <div class="d-flex flex-column flex-grow-1">
                                     <label class="subfield">X</label>
-                                    <label class="value">{{ json_decode($beacon->rotation)->x }}</label>
+                                    <label class="value" id="rotationX">{{ json_decode($beacon->rotation)->x }}</label>
                                 </div>
                                 <div class="d-flex flex-column flex-grow-1">
                                     <label class="subfield">Y</label>
-                                    <label class="value">{{ json_decode($beacon->rotation)->y }}</label>
+                                    <label class="value" id="rotationY">{{ json_decode($beacon->rotation)->y }}</label>
                                 </div>
                                 <div class="d-flex flex-column flex-grow-1">
                                     <label class="subfield">Z</label>
-                                    <label class="value">{{ json_decode($beacon->rotation)->z }}</label>
+                                    <label class="value" id="rotationZ">{{ json_decode($beacon->rotation)->z }}</label>
                                 </div>
                             </div>
                         </div>
@@ -126,12 +126,11 @@
                             <label class="field">Model</label>
                             <label class="value">{{ $beacon->icon ? substr($beacon->icon, strpos($beacon->icon, '-') + 1) : 'none' }}</label>
                         </div>
+                        <button type="button" class="btn btn-dark w-100" id="reset-camera-btn">Reset Camera</button>
                     </div>
                     <div class="w-100" id="map"></div>
                 </div>
-                <div id="model-div">
-                    <!-- Model View -->
-                </div>
+                <div id="scene-div"></div>
             </div>
         </div>
 
@@ -146,10 +145,102 @@
                 scrollwheel: false,
                 disableDoubleClickZoom: true,
             });
-
-            function selectPosition(lat, lng) {
-
-            }
 		</script>
+
+        <script type="module">
+            import * as THREE from 'https://cdn.skypack.dev/three@0.130.0';
+            import { OrbitControls } from "https://threejs.org/examples/jsm/controls/OrbitControls.js";
+            import { OBJLoader } from "https://threejs.org/examples/jsm/loaders/OBJLoader.js";
+            let scene, camera, renderer, controls;
+
+            let sceneDiv = document.getElementById('scene-div');
+            let model;
+
+            function init() {
+              scene = new THREE.Scene();
+              scene.background = new THREE.Color(0xdddddd);
+
+              camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 1, 5000);
+              camera.position.x = 0;
+              camera.position.y = 1;
+              camera.position.z = 5;
+              camera.aspect = sceneDiv.clientWidth / sceneDiv.clientHeight;
+              camera.updateProjectionMatrix();
+
+              let hlight = new THREE.AmbientLight(0x404040, 100);
+              scene.add(hlight);
+
+              let directionalLight = new THREE.DirectionalLight(0xffffff, 100);
+              directionalLight.position.set(0, 1, 0);
+              directionalLight.castShadow = true;
+              scene.add(directionalLight);
+              let light = new THREE.PointLight(0xc4c4c4, 10);
+              light.position.set(0, 300, 500);
+              scene.add(light);
+              let light2 = new THREE.PointLight(0xc4c4c4, 10);
+              light2.position.set(500, 100, 0);
+              scene.add(light2);
+              let light3 = new THREE.PointLight(0xc4c4c4, 10);
+              light3.position.set(0, 100, -500);
+              scene.add(light3);
+              let light4 = new THREE.PointLight(0xc4c4c4, 10);
+              light4.position.set(-500, 300, 500);
+              scene.add(light4);
+
+              // Texture
+              let textureLoader = new THREE.TextureLoader();
+              let map = textureLoader.load("http://localhost/storage/textures/wood.jpeg");
+              let material = new THREE.MeshBasicMaterial({map: map});
+
+              renderer = new THREE.WebGLRenderer({antialias:true});
+              renderer.setSize(sceneDiv.clientWidth, sceneDiv.clientHeight);
+              sceneDiv.appendChild(renderer.domElement);
+
+              controls = new OrbitControls(camera, renderer.domElement);
+
+              let loader = new OBJLoader();
+              loader.load("http://localhost/storage/{{ $beacon->icon }}", function(obj) {
+                model = obj.children[0];
+                model.geometry.center();
+                model.scale.set(1, 1, 1);
+                resetModelRotation();
+
+                obj.traverse(function(node) {
+                    if (node.isMesh) {
+                        console.log(node.material);
+                        node.material = material;
+                        console.log(node.material);
+                    }
+                });
+
+                scene.add(obj);
+                animate();
+              });
+            }
+
+            function animate() {
+              controls.update();
+              renderer.render(scene, camera);
+              requestAnimationFrame(animate);
+            }
+
+            init();
+
+            document.getElementById('reset-camera-btn').addEventListener('click', function() {
+                controls.reset();
+            });
+
+            function resetModelRotation() {
+                model.rotation.x = parseFloat(document.getElementById('rotationX').innerHTML) * Math.PI / 180;
+                model.rotation.y = parseFloat(document.getElementById('rotationY').innerHTML) * Math.PI / 180;
+                model.rotation.z = parseFloat(document.getElementById('rotationZ').innerHTML) * Math.PI / 180;
+            }
+
+            window.addEventListener("resize", () => {
+                camera.aspect = sceneDiv.clientWidth / sceneDiv.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(sceneDiv.clientWidth, sceneDiv.clientHeight);
+            });
+        </script>
     </body>
 </html>
