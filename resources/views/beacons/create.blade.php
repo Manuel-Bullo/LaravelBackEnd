@@ -48,7 +48,7 @@
         <title>Beacon Creator</title>
     </head>
 
-    <body class="overflow-hidden text-white">
+    <body class="overflow-hidden text-white" onload="updatePosition();">
         <div id="map"></div>
 
         <div class="bg-dark" id="form-container">
@@ -68,11 +68,11 @@
                 </div>
                 <div class="col-6">
                   <label for="lat" class="form-label">Latitude</label>
-                  <input type="number" step="any" oninput="updatePosition();" class="form-control" id="lat" name="lat" required>
+                  <input type="number" step="any" oninput="updatePosition();" value="43.46315138233154" class="form-control" id="lat" name="lat" required>
                 </div>
                 <div class="col-6">
                   <label for="lng" class="form-label">Longitude</label>
-                  <input type="number" step="any" oninput="updatePosition();" class="form-control" id="lng" name="lng" required>
+                  <input type="number" step="any" oninput="updatePosition();" value="11.8782411005226" class="form-control" id="lng" name="lng" required>
                 </div>
                 <div class="col-md-12 text-center d-flex flex-column" id="rotation-val-container">
                     <label id="rotation-label">Rotation</label>

@@ -129,19 +129,19 @@
                                 </div>
                             </div>
                             <div class="d-flex flex-column">
-                                <label class="field">Model</label>
+                                <label class="field">models</label>
                                 <div class="d-flex flex-column justify-content-around text-center w-100">
                                     <div class="d-flex flex-column">
                                         <div class="d-flex flex-row justify-content-between">
-                                            <label for="input-model" class="value"><span class="field">OBJ</span>: {{ $beacon->icon ? substr($beacon->icon, strpos($beacon->icon, '-') + 1) : 'none' }}</label>
+                                            <label for="input-models" class="value"><span class="field">OBJ</span>: {{ $beacon->icon ? substr($beacon->icon, strpos($beacon->icon, '-') + 1) : 'none' }}</label>
                                             <div class="d-flex flex-row">
                                                 @isset($beacon->icon)
-                                                    <label for="remove-model" style="padding-right: 10px;">Delete</label>
-                                                    <input type="checkbox" class="h-100" id="remove-model" name="removeModel">
+                                                    <label for="remove-models" style="padding-right: 10px;">Delete</label>
+                                                    <input type="checkbox" class="h-100" id="remove-models" name="removemodels">
                                                 @endisset
                                             </div>
                                         </div>
-                                        <input type="file" accept=".obj" class="value" id="input-model" name="icon">
+                                        <input type="file" accept=".obj" class="value" id="input-models" name="icon">
                                     </div>
                                     <div class="d-flex flex-column">
                                         <div class="d-flex flex-row justify-content-between">
@@ -203,10 +203,13 @@
             import * as THREE from 'https://cdn.skypack.dev/three@0.130.0';
             import { OrbitControls } from "https://threejs.org/examples/jsm/controls/OrbitControls.js";
             import { OBJLoader } from "https://threejs.org/examples/jsm/loaders/OBJLoader.js";
+            import { MTLLoader } from "https://threejs.org/examples/jsm/loaders/MTLLoader.js";
             let scene, camera, renderer, controls;
 
             let sceneDiv = document.getElementById('scene-div');
-            let model;
+            let isOBJPresent = '{{ $beacon->icon }}' ? true : false;
+            let isMTLPresent = '{{ $beacon->mtl }}' ? true : false;
+            var model, models;
 
             function init() {
               scene = new THREE.Scene();
@@ -214,7 +217,7 @@
 
               camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 1, 5000);
               camera.position.x = 0;
-              camera.position.y = 1;
+              camera.position.y = 0;
               camera.position.z = 5;
               camera.aspect = sceneDiv.clientWidth / sceneDiv.clientHeight;
               camera.updateProjectionMatrix();
@@ -250,24 +253,49 @@
 
               controls = new OrbitControls(camera, renderer.domElement);
 
-              let loader = new OBJLoader();
-              loader.load("http://localhost/storage/{{ $beacon->icon }}", function(obj) {
-                model = obj.children[0];
-                model.geometry.center();
-                model.scale.set(1, 1, 1);
-                rotateModel();
+              if (isOBJPresent/* && !isMTLPresent*/) {
+                let loader = new OBJLoader();
+                loader.load("http://localhost/storage/{{ $beacon->icon }}", function(obj) {
+                    models = obj.children;
+                    model = obj.children[0];
+                    model.geometry.center();
+                    model.scale.set(1, 1, 1);
+                    rotateModels();
 
-                obj.traverse(function(node) {
-                    if (node.isMesh) {
-                        console.log(node.material);
-                        node.material = material;
-                        console.log(node.material);
-                    }
+                    obj.traverse(function(node) {
+                        if (node.isMesh) {
+                            node.material = material;
+                        }
+                    });
+
+                    scene.add(obj);
+                    animate();
                 });
+              }/* else if (isOBJPresent && isMTLPresent) {
+                let mtlLoader = new MTLLoader();
+                mtlLoader.load("http://localhost/storage/{{ $beacon->mtl }}", function(materials) {
+                    //materials.preload();
 
-                scene.add(obj);
-                animate();
-              });
+                    let objLoader = new OBJLoader();
+                    //objLoader.setMaterials(materials);
+                    objLoader.load("http://localhost/storage/{{ $beacon->icon }}", function (obj) {
+                        models = obj.children;
+                        model = obj.children[0];
+                        model.geometry.center();
+                        model.scale.set(1, 1, 1);
+                        rotateModels();
+
+                        obj.traverse(function(node) {
+                            if (node.isMesh) {
+                                node.material = material;
+                            }
+                        });
+
+                        scene.add(obj);
+                        animate();
+                    });
+                });
+              }*/
             }
 
             function animate() {
@@ -286,15 +314,20 @@
             let rotationYInput = document.getElementById('rotationY');
             let rotationZInput = document.getElementById('rotationZ');
 
-            rotationXInput.addEventListener('input', rotateModel);
-            rotationYInput.addEventListener('input', rotateModel);
-            rotationZInput.addEventListener('input', rotateModel);
+            rotationXInput.addEventListener('input', rotateModels);
+            rotationYInput.addEventListener('input', rotateModels);
+            rotationZInput.addEventListener('input', rotateModels);
 
 
-            function rotateModel() {
-                model.rotation.x = parseFloat(rotationXInput.value) * Math.PI / 180;
-                model.rotation.y = parseFloat(rotationYInput.value) * Math.PI / 180;
-                model.rotation.z = parseFloat(rotationZInput.value) * Math.PI / 180;
+            function rotateModels() {
+                if (!isOBJPresent)
+                    return;
+
+                models.forEach(element => {
+                    element.rotation.x = parseFloat(rotationXInput.value) * Math.PI / 180;
+                    element.rotation.y = parseFloat(rotationYInput.value) * Math.PI / 180;
+                    element.rotation.z = parseFloat(rotationZInput.value) * Math.PI / 180;
+                });
             }
 
             window.addEventListener("resize", () => {
