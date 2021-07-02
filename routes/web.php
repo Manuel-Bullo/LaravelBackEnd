@@ -15,7 +15,17 @@ use App\Http\Controllers\BeaconController;
 */
 
 Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('beacons/', function () {
     return redirect()->route('beacons.index');
 });
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth'])->name('dashboard');
+
+require __DIR__ . '/auth.php';
 
 Route::resource('beacons', BeaconController::class);
