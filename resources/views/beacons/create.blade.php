@@ -23,7 +23,6 @@
 			}
 
             #form-container {
-                position: absolute;
                 width: 350px;
                 top: 100vh;
                 transform: translate(5%, -105%);
@@ -51,7 +50,7 @@
     <body class="overflow-hidden text-white" onload="updatePosition();">
         <div id="map"></div>
 
-        <div class="bg-dark" id="form-container">
+        <div class="bg-dark position-absolute" id="form-container">
             <form class="row g-3" enctype="multipart/form-data" id="form" method="POST" action="{{ route("beacons.store") }}">
                 @csrf
 

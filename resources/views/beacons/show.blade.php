@@ -14,7 +14,6 @@
 
         <style>
             #header {
-                position: fixed;
                 height: 55px;
                 z-index: 1;
             }
@@ -73,7 +72,7 @@
 
     <body class="overflow-hidden">
         <div class="w-100 vh-100 d-flex flex-row" id="main-div">
-            <div class="bg-dark w-100 d-flex flex-row justify-content-between text-white" id="header">
+            <div class="bg-dark w-100 d-flex flex-row justify-content-between text-white position-fixed" id="header">
                 <h1>Beacon</h1>
                 <div>
                     <a href="{{ route('beacons.edit', $beacon) }}"><button type="button" class="btn btn-dark">Edit Beacon</button></a>
@@ -160,10 +159,13 @@
             import * as THREE from 'https://cdn.skypack.dev/three@0.130.0';
             import { OrbitControls } from "https://threejs.org/examples/jsm/controls/OrbitControls.js";
             import { OBJLoader } from "https://threejs.org/examples/jsm/loaders/OBJLoader.js";
+            import { MTLLoader } from "https://threejs.org/examples/jsm/loaders/MTLLoader.js";
             let scene, camera, renderer, controls;
 
             let sceneDiv = document.getElementById('scene-div');
-            let model;
+            let isOBJPresent = '{{ $beacon->icon }}' ? true : false;
+            let isMTLPresent = '{{ $beacon->mtl }}' ? true : false;
+            var model, models;
 
             function init() {
               scene = new THREE.Scene();
@@ -171,32 +173,16 @@
 
               camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 1, 5000);
               camera.position.x = 0;
-              camera.position.y = 1;
+              camera.position.y = 0;
               camera.position.z = 5;
               camera.aspect = sceneDiv.clientWidth / sceneDiv.clientHeight;
               camera.updateProjectionMatrix();
 
+              // Light
               let hlight = new THREE.AmbientLight(0x404040, 100);
               scene.add(hlight);
 
-              let directionalLight = new THREE.DirectionalLight(0xffffff, 100);
-              directionalLight.position.set(0, 1, 0);
-              directionalLight.castShadow = true;
-              scene.add(directionalLight);
-              let light = new THREE.PointLight(0xc4c4c4, 10);
-              light.position.set(0, 300, 500);
-              scene.add(light);
-              let light2 = new THREE.PointLight(0xc4c4c4, 10);
-              light2.position.set(500, 100, 0);
-              scene.add(light2);
-              let light3 = new THREE.PointLight(0xc4c4c4, 10);
-              light3.position.set(0, 100, -500);
-              scene.add(light3);
-              let light4 = new THREE.PointLight(0xc4c4c4, 10);
-              light4.position.set(-500, 300, 500);
-              scene.add(light4);
-
-              // Texture
+              // Load Texture
               let textureLoader = new THREE.TextureLoader();
               let map = textureLoader.load("http://localhost/storage/textures/wood.jpeg");
               let material = new THREE.MeshBasicMaterial({map: map});
@@ -205,26 +191,29 @@
               renderer.setSize(sceneDiv.clientWidth, sceneDiv.clientHeight);
               sceneDiv.appendChild(renderer.domElement);
 
+              // Mouse controllable camera
               controls = new OrbitControls(camera, renderer.domElement);
 
-              let loader = new OBJLoader();
-              loader.load("http://localhost/storage/{{ $beacon->icon }}", function(obj) {
-                model = obj.children[0];
-                model.geometry.center();
-                model.scale.set(1, 1, 1);
-                resetModelRotation();
+              // Load OBJ if present
+              if (isOBJPresent) {
+                let loader = new OBJLoader();
+                loader.load("http://localhost/storage/{{ $beacon->icon }}", function(obj) {
+                    models = obj.children;
+                    model = obj.children[0];
+                    model.geometry.center();
+                    model.scale.set(1, 1, 1);
+                    rotateModels();
 
-                obj.traverse(function(node) {
-                    if (node.isMesh) {
-                        console.log(node.material);
-                        node.material = material;
-                        console.log(node.material);
-                    }
+                    obj.traverse(function(node) {
+                        if (node.isMesh) {
+                            node.material = material;
+                        }
+                    });
+
+                    scene.add(obj);
+                    animate();
                 });
-
-                scene.add(obj);
-                animate();
-              });
+              }
             }
 
             function animate() {
@@ -239,11 +228,22 @@
                 controls.reset();
             });
 
-            function resetModelRotation() {
-                model.rotation.x = parseFloat(document.getElementById('rotationX').innerHTML) * Math.PI / 180;
-                model.rotation.y = parseFloat(document.getElementById('rotationY').innerHTML) * Math.PI / 180;
-                model.rotation.z = parseFloat(document.getElementById('rotationZ').innerHTML) * Math.PI / 180;
+            function rotateModels() {
+                if (!isOBJPresent)
+                    return;
+
+                models.forEach(element => {
+                    element.rotation.x = parseFloat(rotationX.innerHTML) * Math.PI / 180;
+                    element.rotation.y = parseFloat(rotationY.innerHTML) * Math.PI / 180;
+                    element.rotation.z = parseFloat(rotationZ.innerHTML) * Math.PI / 180;
+                });
             }
+
+            /*
+            * Function that resize
+            * the 3D scene on window's
+            * resize event
+            */
 
             window.addEventListener("resize", () => {
                 camera.aspect = sceneDiv.clientWidth / sceneDiv.clientHeight;

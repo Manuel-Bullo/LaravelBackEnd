@@ -37,8 +37,6 @@
 
             #div-container {
                 width: 50%;
-                display: flex;
-                flex-direction: column;
             }
 
             #beacon-div {
@@ -84,7 +82,7 @@
                 </div>
             </div>
             <div class="w-100 v-100 d-flex" id="container">
-                <div class="h-100" id="div-container">
+                <div class="h-100 d-flex flex-column" id="div-container">
                     <div class="bg-dark w-100 text-white" id="beacon-div">
                         <form enctype="multipart/form-data" method="POST" action="{{ route("beacons.update", $beacon) }}">
                             @csrf
@@ -222,25 +220,9 @@
               camera.aspect = sceneDiv.clientWidth / sceneDiv.clientHeight;
               camera.updateProjectionMatrix();
 
+              // Light
               let hlight = new THREE.AmbientLight(0x404040, 100);
               scene.add(hlight);
-
-              let directionalLight = new THREE.DirectionalLight(0xffffff, 100);
-              directionalLight.position.set(0, 1, 0);
-              directionalLight.castShadow = true;
-              scene.add(directionalLight);
-              let light = new THREE.PointLight(0xc4c4c4, 10);
-              light.position.set(0, 300, 500);
-              scene.add(light);
-              let light2 = new THREE.PointLight(0xc4c4c4, 10);
-              light2.position.set(500, 100, 0);
-              scene.add(light2);
-              let light3 = new THREE.PointLight(0xc4c4c4, 10);
-              light3.position.set(0, 100, -500);
-              scene.add(light3);
-              let light4 = new THREE.PointLight(0xc4c4c4, 10);
-              light4.position.set(-500, 300, 500);
-              scene.add(light4);
 
               // Texture
               let textureLoader = new THREE.TextureLoader();
@@ -251,9 +233,11 @@
               renderer.setSize(sceneDiv.clientWidth, sceneDiv.clientHeight);
               sceneDiv.appendChild(renderer.domElement);
 
+              // Mouse controllable camera
               controls = new OrbitControls(camera, renderer.domElement);
 
-              if (isOBJPresent/* && !isMTLPresent*/) {
+              // Load OBJ if present
+              if (isOBJPresent) {
                 let loader = new OBJLoader();
                 loader.load("http://localhost/storage/{{ $beacon->icon }}", function(obj) {
                     models = obj.children;
@@ -271,31 +255,7 @@
                     scene.add(obj);
                     animate();
                 });
-              }/* else if (isOBJPresent && isMTLPresent) {
-                let mtlLoader = new MTLLoader();
-                mtlLoader.load("http://localhost/storage/{{ $beacon->mtl }}", function(materials) {
-                    //materials.preload();
-
-                    let objLoader = new OBJLoader();
-                    //objLoader.setMaterials(materials);
-                    objLoader.load("http://localhost/storage/{{ $beacon->icon }}", function (obj) {
-                        models = obj.children;
-                        model = obj.children[0];
-                        model.geometry.center();
-                        model.scale.set(1, 1, 1);
-                        rotateModels();
-
-                        obj.traverse(function(node) {
-                            if (node.isMesh) {
-                                node.material = material;
-                            }
-                        });
-
-                        scene.add(obj);
-                        animate();
-                    });
-                });
-              }*/
+              }
             }
 
             function animate() {
@@ -329,6 +289,12 @@
                     element.rotation.z = parseFloat(rotationZInput.value) * Math.PI / 180;
                 });
             }
+
+            /*
+            * Function that resize
+            * the 3D scene on window's
+            * resize event
+            */
 
             window.addEventListener("resize", () => {
                 camera.aspect = sceneDiv.clientWidth / sceneDiv.clientHeight;
