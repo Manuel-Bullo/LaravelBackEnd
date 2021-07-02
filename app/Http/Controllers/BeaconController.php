@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Beacon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class BeaconController extends Controller
 {
@@ -15,7 +16,7 @@ class BeaconController extends Controller
     public function index()
     {
         $beacons = Beacon::get();
-        return view("ViewBeacons", compact("beacons"));
+        return view("/beacons/index", compact("beacons"));
     }
 
     /**
@@ -25,7 +26,7 @@ class BeaconController extends Controller
      */
     public function create()
     {
-        return view('CreateBeacon');
+        return view('/beacons/create');
     }
 
     /**
@@ -38,8 +39,16 @@ class BeaconController extends Controller
     {
         Beacon::create([
             'name' => $request->get('name'),
+            'description' => $request->get('description'),
             'lat' => $request->get('lat'),
             'lng' => $request->get('lng'),
+            'rotation' => json_encode([
+                'x' => doubleval($request->get('rotationX')),
+                'y' => doubleval($request->get('rotationY')),
+                'z' => doubleval($request->get('rotationZ')),
+            ]),
+            'icon' => ($request->hasFile('icon') ? $request->file('icon')->storeAs('icons', time() . '-' . $request->file('icon')->getClientOriginalName(), 'public') : null),
+            'mtl' => ($request->hasFile('mtl') ? $request->file('mtl')->storeAs('mtl', time() . '-' . $request->file('mtl')->getClientOriginalName(), 'public') : null),
         ]);
 
         return redirect("/beacons");
@@ -53,7 +62,8 @@ class BeaconController extends Controller
      */
     public function show(Beacon $beacon)
     {
-        //
+        return view('/beacons/show', compact('beacon'));
+        //return view('/beacons/show3DViewTest', compact('beacon'));
     }
 
     /**
@@ -64,7 +74,7 @@ class BeaconController extends Controller
      */
     public function edit(Beacon $beacon)
     {
-        //
+        return view('/beacons/edit', compact('beacon'));
     }
 
     /**
@@ -76,7 +86,29 @@ class BeaconController extends Controller
      */
     public function update(Request $request, Beacon $beacon)
     {
-        //
+        $beacon->name = $request->name;
+        $beacon->description = $request->description;
+        $beacon->lat = $request->lat;
+        $beacon->lng = $request->lng;
+        $beacon->rotation = json_encode([
+            'x' => doubleval($request->get('rotationX')),
+            'y' => doubleval($request->get('rotationY')),
+            'z' => doubleval($request->get('rotationZ')),
+        ]);
+
+        if (isset($request->removeModel) || $request->hasFile('icon')) {
+            Storage::disk('public')->delete($beacon->icon);
+            $beacon->icon = ($request->hasFile('icon') ? $request->file('icon')->storeAs('icons', time() . '-' . $request->file('icon')->getClientOriginalName(), 'public') : null);
+        }
+
+        if (isset($request->removeMTL) || $request->hasFile('mtl')) {
+            Storage::disk('public')->delete($beacon->mtl);
+            $beacon->mtl = ($request->hasFile('mtl') ? $request->file('mtl')->storeAs('mtl', time() . '-' . $request->file('mtl')->getClientOriginalName(), 'public') : null);
+        }
+
+        $beacon->save();
+
+        return redirect()->route('beacons.show', compact('beacon'));
     }
 
     /**
@@ -87,6 +119,8 @@ class BeaconController extends Controller
      */
     public function destroy(Beacon $beacon)
     {
-        //
+        $beacon->delete();
+
+        return redirect()->route('beacons.index');
     }
 }
